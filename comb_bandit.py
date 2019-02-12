@@ -30,8 +30,9 @@ def generateTrial(trial_len, k = 5):
 
 # Total number of items to select from
 No_Items = 100
+accuracy = 0.0
 
-while True:
+while accuracy < 0.8:
 	trial = generateTrial(No_Items)
 
 	if Trial_List is None:
@@ -59,5 +60,7 @@ while True:
 	Trial_List = Trial_List[:,ind[1]]
 	best_trial = Trial_List[:, -1]
 	print(best_trial)
-	print(np.mean(best_trial[-5:]))
+	accuracy = np.mean(best_trial[-5:])
+	print(accuracy)
+	print(Trial_List.shape[1])
 	#print(Score_List[:,-1])
