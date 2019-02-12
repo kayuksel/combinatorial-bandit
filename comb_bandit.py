@@ -18,7 +18,7 @@ def getChance(worst_ratio = 0.75):
 	return chance * novelty
 
 # Samples item subsets based on chances computed at the previous step
-def generateTrial(trial_len, k = 25):
+def generateTrial(trial_len, k = 5):
 	if Trial_List is None:
 		Chances = np.ones(trial_len)
 	else:
@@ -29,7 +29,7 @@ def generateTrial(trial_len, k = 25):
 	return rand_vec.reshape(-1, 1)
 
 # Total number of items to select from
-No_Items = 500
+No_Items = 100
 
 while True:
 	trial = generateTrial(No_Items)
@@ -39,7 +39,8 @@ while True:
 	else:
 		Trial_List = np.concatenate((Trial_List, trial), axis = 1)
 
-	print(getChance())
+	#chance = getChance()
+	#print(chance / np.sum(chance))
 
 	score = blackboxScore(trial)
 
@@ -54,5 +55,6 @@ while True:
 	Score_List = Score_List[:,ind[1]]
 	Trial_List = Trial_List[:,ind[1]]
 	best_trial = Trial_List[:, -1]
-	#print(best_trial)
+	print(best_trial)
+	print(np.mean(best_trial[-5:]))
 	#print(Score_List[:,-1])
