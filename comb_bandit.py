@@ -37,6 +37,9 @@ while True:
 	if Trial_List is None:
 		Trial_List = trial
 	else:
+		while not any(np.equal(Trial_List,trial).all(1)):
+			print('skip duplicate')
+			trial = generateTrial(No_Items)
 		Trial_List = np.concatenate((Trial_List, trial), axis = 1)
 
 	#chance = getChance()
