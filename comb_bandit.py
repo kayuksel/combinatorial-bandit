@@ -6,7 +6,7 @@ Score_List = None
 
 # Sample Reward function which has a bias towards the latest items
 def blackboxScore(trial):
-	return np.sum(np.exp(trial * np.arange(len(trial)))).reshape(1,1)
+	return np.sum(trial * np.arange(len(trial)).reshape(-1,1)).reshape(1,1)
 
 # Checks the ratio of items at top 25% samples while also exploring
 def getChance(worst_ratio = 0.75):
