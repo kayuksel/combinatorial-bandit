@@ -13,7 +13,6 @@ def getChance(worst_ratio = 0.75):
 	half = np.sum(Trial_List[:,:half_len], axis=1)
 	total = np.sum(Trial_List, axis=1) + 1
 	chance = 1.0 - np.true_divide(half, total)
-	print(chance)
 	novelty = 1.0 - np.mean(Trial_List, axis=1).ravel()
 	return chance * novelty
 
@@ -37,7 +36,7 @@ while True:
 	else:
 		Trial_List = np.concatenate((Trial_List, trial), axis = 1)
 
-	#print(getChance())
+	print(getChance())
 
     score = blackboxScore(trial)
 
