@@ -1,6 +1,8 @@
 import numpy as np
 import pdb
 
+np.random.seed(1337)
+
 Trial_List = None
 Score_List = None
 
@@ -9,13 +11,17 @@ def blackboxScore(trial):
 	return np.sum(trial * np.arange(len(trial)).reshape(-1,1)).reshape(1,1)
 
 # Checks the ratio of items at top 25% samples while also exploring
-def getChance(worst_ratio = 0.75):
-	half_len = int(Trial_List.shape[1]*worst_ratio)
+def getChance(r1 = 0.75, r2 = 0.9):
+	half_len = int(Trial_List.shape[1]*r1)
 	half = np.sum(Trial_List[:,:half_len], axis=1)
 	total = np.sum(Trial_List, axis=1) + 1
 	chance = 1.0 - np.true_divide(half, total)
+
+	half_len = int(Trial_List.shape[1]*r2)
+	best = np.mean(Trial_List[:,half_len:], axis=1).ravel() + 1.0
+
 	novelty = 1.0 - np.mean(Trial_List, axis=1).ravel()
-	return chance * novelty
+	return chance * novelty * best
 
 # Samples item subsets based on chances computed at the previous step
 def generateTrial(trial_len, k = 5):
@@ -32,7 +38,7 @@ def generateTrial(trial_len, k = 5):
 No_Items = 100
 accuracy = 0.0
 
-while accuracy < 0.8:
+while accuracy < 1.0:
 	trial = generateTrial(No_Items)
 
 	if Trial_List is None:
@@ -43,9 +49,7 @@ while accuracy < 0.8:
 			trial = generateTrial(No_Items)
 		Trial_List = np.concatenate((Trial_List, trial), axis = 1)
 
-	#chance = getChance()
-	#print(chance / np.sum(chance))
-
+	#print(Trial_List[:, -1])
 	score = blackboxScore(trial)
 
 	if Score_List is None:
@@ -63,4 +67,3 @@ while accuracy < 0.8:
 	accuracy = np.mean(best_trial[-5:])
 	print(accuracy)
 	print(Trial_List.shape[1])
-	#print(Score_List[:,-1])
