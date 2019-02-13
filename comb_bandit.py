@@ -11,13 +11,13 @@ def blackboxScore(trial):
 	return np.sum(trial * np.arange(len(trial)).reshape(-1,1)).reshape(1,1)
 
 # Checks the ratio of items at top 25% samples while also exploring
-def getChance(r1 = 0.75, r2 = 0.9):
-	half_len = int(Trial_List.shape[1]*r1)
+def getChance(worst_ratio = 0.75):
+	half_len = int(Trial_List.shape[1]*0.75)
 	half = np.sum(Trial_List[:,:half_len], axis=1)
 	total = np.sum(Trial_List, axis=1) + 1
 	chance = 1.0 - np.true_divide(half, total)
 
-	half_len = int(Trial_List.shape[1]*r2)
+	half_len = int(Trial_List.shape[1]*0.9)
 	best = np.mean(Trial_List[:,half_len:], axis=1).ravel() + 1.0
 
 	novelty = 1.0 - np.mean(Trial_List, axis=1).ravel()
@@ -36,17 +36,18 @@ def generateTrial(trial_len, k = 5):
 
 # Total number of items to select from
 No_Items = 100
+No_Select = 5
 accuracy = 0.0
 
 while accuracy < 1.0:
-	trial = generateTrial(No_Items)
+	trial = generateTrial(No_Items, No_Select)
 
 	if Trial_List is None:
 		Trial_List = trial
 	else:
 		while not any(np.equal(Trial_List,trial).all(1)):
 			print('skip duplicate')
-			trial = generateTrial(No_Items)
+			trial = generateTrial(No_Items, No_Select)
 		Trial_List = np.concatenate((Trial_List, trial), axis = 1)
 
 	#print(Trial_List[:, -1])
@@ -64,6 +65,6 @@ while accuracy < 1.0:
 	Trial_List = Trial_List[:,ind[1]]
 	best_trial = Trial_List[:, -1]
 	print(best_trial)
-	accuracy = np.mean(best_trial[-5:])
+	accuracy = np.mean(best_trial[-No_Select:])
 	print(accuracy)
 	print(Trial_List.shape[1])
